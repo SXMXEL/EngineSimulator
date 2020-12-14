@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Engine_model
@@ -28,12 +29,55 @@ namespace Engine_model
                     case Commands.TestCurrentEngine:
                         TestCurrentStand(testStand);
                         break;
+                    case Commands.TestCustomEngine:
+                        var m = 0;
+                        var v = 0;
+                        Console.Write("Please enter engine moment of inertia \"I\": ");
+                        var i = double.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        Console.Write("Please enter engine overheat temperature \"Toverheat\": ");
+                        var overheatTemperature =
+                            double.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        Console.Write(
+                            "Please enter the coefficient of the dependence of the heating rate on the torque \"Hm\": ");
+                        var hm = double.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        Console.Write(
+                            "Please enter the coefficient of the dependence of the heating rate" +
+                            " on the crankshaft rotation speed \"Hv\": ");
+                        var hv = double.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        Console.Write("Please enter Coefficient of dependence of cooling rate" +
+                                      " on engine temperature and ambient temperature \"C\": ");
+                        var c = double.Parse(Console.ReadLine() ?? throw new InvalidOperationException());
+                        Console.Write("Please enter M array like this \" 20, 75, 100, 105, 75, 0\" : ");
+                        var startM = ToIntArray(Console.ReadLine(),',');
+                        Console.Write("Please enter V array like this \" 0, 75, 150, 200, 250, 300\" : ");
+                        var startV = ToIntArray(Console.ReadLine(),',');
+                        
+                        var customEngine = new InternalCombustionEngine(m, v, i, overheatTemperature,
+                            hm, hv, c, startM, startV);
+                        var customTestStand = new TestStand(customEngine);
+                        TestCurrentStand(customTestStand);
+                        break;
                     case Commands.Default:
                     default:
                         Console.WriteLine("Wrong command! Try again...");
                         break;
                 }
             }
+        }
+
+        private static int[] ToIntArray(string value, char sep)
+        {
+            var input = value.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+            var startArr = new int[input.Length];
+            for (var i = 0; i < startArr.Length; ++i)
+            {
+                var s = input[i];
+                if (int.TryParse(s, out var j))
+                {
+                    startArr[i] = j;
+                }
+            }
+            return startArr;
         }
 
         private static void TestCurrentStand(TestStand testStand)

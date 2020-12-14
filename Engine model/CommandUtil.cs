@@ -6,6 +6,7 @@ namespace Engine_model
     public enum Commands
     {
         TestCurrentEngine,
+        TestCustomEngine,
         Default,
     }
 
@@ -14,6 +15,7 @@ namespace Engine_model
         public static readonly Dictionary<Commands, string> CommandKeys = new Dictionary<Commands, string>()
         {
             {Commands.TestCurrentEngine, "test"},
+            {Commands.TestCustomEngine, "CustomTest"},
         };
 
         public static Commands GetCommandByKey(string dataValue)
